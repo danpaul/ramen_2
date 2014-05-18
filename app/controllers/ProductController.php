@@ -1,6 +1,6 @@
 <?php
 
-class AdminController extends BaseController {
+class ProductController extends BaseController {
 
 	public function getAddProduct()
 	{

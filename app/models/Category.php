@@ -1,14 +1,25 @@
 <?php
 
+/******************************************************************************/
+
 class Category extends Eloquent {
 
 	protected $table = 'Categories';
 	public $timestamps = FALSE;
 
-	// http://stackoverflow.com/questions/4843945/php-tree-structure-for-categories-and-sub-categories-without-looping-a-query
+	/**
+	*  Takes the category type as string and returns an array reprsenting the
+	*    Category hierarchy.
+	*    
+	*  @param - $type - String - The category typ to get
+	*
+	*  @return - Array - Returns an array representing the category hierarchy.
+	*    The first level of the array is the top level of the hierarch. Each
+	*    array element contains a `subcategories` key with an array of
+	*    categories or an empty array if there are no sub-categories.
+	*/
 	public static function getCategoryTree($type)
 	{
-
 		$categories = self::where('category_type', '=', $type)->get()->toArray();
 	    $map = array();
 	    $tree = array();
@@ -36,7 +47,6 @@ class Category extends Eloquent {
 	    }
 
 	    return $tree;
-
 	}
 
 
