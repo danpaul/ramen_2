@@ -26,19 +26,6 @@ class UserController extends BaseController {
 			'password_confirmation' => Input::get('password_confirmation', '')
 		);
 
-var_dump(Input::all());
-
-		$this->validateRegistration($userParams);
-
-
-
-	}
-
-	/**
-	*  Validates user params, redirect with error messages if not valid
-	*/
-	protected function validateRegistration(&$userParams)
-	{
 		$rules = array(
 			'email' => 'required|email|unique:Users',
 			'password' => 'required|min:8|confirmed'
@@ -48,9 +35,8 @@ var_dump(Input::all());
 
 		if( $validator->fails() )
 		{
-var_dump($validator->messages());
+			return Redirect::to('/user/login')->withErrors($validator);
 		}
-
 
 	}
 
