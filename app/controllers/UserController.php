@@ -38,6 +38,15 @@ class UserController extends BaseController {
 			return Redirect::to('/user/login')->withErrors($validator);
 		}
 
+		$user = new User;
+
+		$user->email = $userParams['email'];
+		$user->password = Hash::make($userParams['password']);
+
+		$user->save();
+
+// var_dump($userParams);
+
 	}
 
 }
