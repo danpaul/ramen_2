@@ -27,7 +27,7 @@ class UserController extends BaseController {
 		);
 
 		$rules = array(
-			'email' => 'required|email|unique:Users',
+			'email' => 'required|email|unique:users',
 			'password' => 'required|min:8|confirmed'
 		);
 
@@ -44,6 +44,16 @@ class UserController extends BaseController {
 		$user->password = Hash::make($userParams['password']);
 
 		$user->save();
+
+		Mail::send(
+			'emails.welcome',
+			array('registrationLink' => URL::to('user/verify/')),
+			function($message) use ($user)
+		{
+			$message->to($user->email)->subject('Welcome!');
+		});
+
+
 
 	}
 
