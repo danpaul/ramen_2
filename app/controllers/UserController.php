@@ -45,8 +45,6 @@ class UserController extends BaseController {
 
 		$user->save();
 
-// var_dump($userParams);
-
 	}
 
 }
