@@ -20,12 +20,14 @@ class UserController extends BaseController {
 
 	public function postRegister()
 	{
+		// get input params
 		$userParams = array(
 			'email' => Input::get('email', ''),
 			'password' => Input::get('password', ''),
 			'password_confirmation' => Input::get('password_confirmation', '')
 		);
 
+		//perform validation
 		$rules = array(
 			'email' => 'required|email|unique:users',
 			'password' => 'required|min:8|confirmed'
@@ -38,6 +40,7 @@ class UserController extends BaseController {
 			return Redirect::to('/user/login')->withErrors($validator);
 		}
 
+		// save user
 		$user = new User;
 
 		$user->email = $userParams['email'];
@@ -45,14 +48,24 @@ class UserController extends BaseController {
 
 		$user->save();
 
+		// create verification record and link
+		$verification = new Verification;
+
+		$verification->code = md5(rand()). md5(rand());
+		$verification->email = $user->email;
+
+		$verification->save();		
+
+		//send welcome email
+		$verificationLink = URL::to('user/verify/'. $verification->code);
+
 		Mail::send(
 			'emails.welcome',
-			array('registrationLink' => URL::to('user/verify/')),
+			array('verificationLink' => $verificationLink),
 			function($message) use ($user)
 		{
 			$message->to($user->email)->subject('Welcome!');
 		});
-
 
 
 	}
