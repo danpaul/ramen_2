@@ -24,4 +24,4 @@ Route::get('/', function()
 	echo 'home';
 });
 
-Route::controller('admin', 'AdminController');
+// Route::controller('admin', 'AdminController');

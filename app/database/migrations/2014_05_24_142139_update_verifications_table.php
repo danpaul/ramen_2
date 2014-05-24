@@ -12,22 +12,14 @@ class UpdateVerificationsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::tabe('verifications', function(Blueprint $table)
+		Schema::table('verifications', function(Blueprint $table)
 		{
 			$table->dropColumn('email');
-
-
-			$table->foreign('user_id')->references('id')->on('users');
-
-
-
-			$table->timestamps();
-	        $table->string('email')->unique();
-	        $table->string('password');
-	        $table->string('first_name')->default('');
-	        $table->string('last_name')->default('');
-	        $table->smallInteger('role')->default(0);
-	        $table->boolean('verified')->default(FALSE);
+			$table->integer('user_id')->unsigned();
+			$table->foreign('user_id')
+				->references('id')
+				->on('users')
+				->onDelete('cascade');
 		});
 	}
 
@@ -38,7 +30,11 @@ class UpdateVerificationsTable extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::table('verifications', function(Blueprint $table)
+		{
+			$table->dropColumn('user_id');
+			$table->string('email');
+		});
 	}
 
 }

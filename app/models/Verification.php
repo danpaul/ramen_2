@@ -7,7 +7,7 @@ class Verification extends Eloquent {
 
 	public function user()
 	{
-		return $this->hasOne('User');
+		return $this->belongsTo('User');
 	}
 
 }

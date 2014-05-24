@@ -53,7 +53,7 @@ class UserController extends BaseController {
 		$verification = new Verification;
 
 		$verification->code = md5(rand()). md5(time());
-		$verification->email = $user->email;
+		$verification->user_id = $user->id;
 
 		$verification->save();		
 
@@ -67,6 +67,8 @@ class UserController extends BaseController {
 		{
 			$message->to($user->email)->subject('Welcome!');
 		});
+
+		return View::make('notify',array('messages' => array('Thank you for registering. Please check your email to verify your email address.')));
 
 	}
 
@@ -83,15 +85,7 @@ class UserController extends BaseController {
 			return View::make('notify', array('messages' => $messages));
 		}
 
-		//if it is, update user status to verified
-		$user = User::where('email', '=', $verification->email)->first();
-
-		if( $user === NULL )
-		{
-			array_push($messages, 'User not found.');
-			return View::make('notify', array('messages' => $messages));
-		}
-
+		$user = $verification->user();
 		$user->verified = true;
 		$user->save();
 
