@@ -13,6 +13,7 @@ class UserController extends BaseController {
 		echo Input::get('password');
 	}
 
+
 	public function getRegister()
 	{
 		return View::make('userRegister');
@@ -51,7 +52,7 @@ class UserController extends BaseController {
 		// create verification record and link
 		$verification = new Verification;
 
-		$verification->code = md5(rand()). md5(rand());
+		$verification->code = md5(rand()). md5(time());
 		$verification->email = $user->email;
 
 		$verification->save();		
@@ -67,95 +68,37 @@ class UserController extends BaseController {
 			$message->to($user->email)->subject('Welcome!');
 		});
 
+	}
 
+	public function getVerify($code)
+	{
+		$messages = array();
+
+		//check if verification code is in DB
+		$verification = Verification::where('code', '=', $code)->first();
+
+		if( $verification === NULL )
+		{
+			array_push($messages, 'Verification code not found.');
+			return View::make('notify', array('messages' => $messages));
+		}
+
+		//if it is, update user status to verified
+		$user = User::where('email', '=', $verification->email)->first();
+
+		if( $user === NULL )
+		{
+			array_push($messages, 'User not found.');
+			return View::make('notify', array('messages' => $messages));
+		}
+
+		$user->verified = true;
+		$user->save();
+
+		//render notification page
+		array_push($messages, 'Thanks, your email is now verified!');
+		return View::make('notify', array('messages' => $messages));
+		
 	}
 
 }
-
-		// Validate
-
-
-
-
-
-
-		// if( $this->get_user($email) )
-		// {
-		// 	$valid = FALSE;
-		// 	array_push($this->error_message, self::ERROR_USER_EXISTS);
-		// }
-
-		// if( !filter_var($email, FILTER_VALIDATE_EMAIL ))
-		// {
-		// 	$valid = FALSE;
-		// 	array_push($this->error_message, self::ERROR_INVALID_EMAIL);
-		// }
-
-		// if( !$this->validate_password($password_1, $password_2) )
-		// {
-		// 	$valid = FALSE;
-		// }
-// var_dump('in registration');
-		// return View::make('userRegister');
-	
-
-		// $valid = TRUE;
-
-		// if( $this->get_user($email) )
-		// {
-		// 	$valid = FALSE;
-		// 	array_push($this->error_message, self::ERROR_USER_EXISTS);
-		// }
-
-		// if( !filter_var($email, FILTER_VALIDATE_EMAIL ))
-		// {
-		// 	$valid = FALSE;
-		// 	array_push($this->error_message, self::ERROR_INVALID_EMAIL);
-		// }
-
-		// if( !$this->validate_password($password_1, $password_2) )
-		// {
-		// 	$valid = FALSE;
-		// }
-
-
-
-
-
-
-
-
-
-		// if( !$this->validate_registration_information($email, $password_1, $password_2) )
-		// {
-		// 	return FALSE;
-		// }
-
-		// $params['email'] = $email;
-		// $params['salt'] = $this->get_salt();
-		// $params['password'] = $this->hash_password($password_1, $params['salt']);
-
-		// $statement = $this->db->prepare(self::STATEMENT_INSERT_USER);
-		
-		// if(!$statement->execute($params))
-		// {
-		// 	array_push($this->error_message, self::ERROR_DATABASE);
-		// 	return FALSE;
-		// }
-
-		// $code = $this->get_code($email);
-		// $this->verification_code = $code;
-		// $verification_params = array('code' => $code, 'email' => $params['email']);
-		// $statement = $this->db->prepare(self::STATEMENT_INSERT_VERIFICATION);
-
-		// if(!$statement->execute($verification_params))
-		// {
-		// 	array_push($this->error_message, self::ERROR_DATABASE);
-		// 	return FALSE;
-		// }
-
-		// $this->set_user($email);
-
-		// return TRUE;
-
-

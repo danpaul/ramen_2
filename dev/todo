@@ -1,2 +1,4 @@
 
 - add mail config and remove creds
+
+- index only first 5 or so? characters of verification code
