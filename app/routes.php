@@ -10,6 +10,8 @@
 
 Route::controller('user', 'UserController');
 
+Route::controller('password', 'RemindersController');
+
 Route::get('verify/{code}', function()
 {
 

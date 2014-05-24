@@ -1,1 +1,0 @@
-<p>Hello and Welcome. Thank you for registering. If you would please click on the link below, so we can verify that you do in fact own this email address, we will have taken an important step in our relationship.</p> 

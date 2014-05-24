@@ -9,8 +9,16 @@ class UserController extends BaseController {
 
 	public function postLogin()
 	{
-		echo Input::get('email');
-		echo Input::get('password');
+		if( (Auth::attempt(array(
+			'email' => Input::get('email', ''),
+			'password' => Input::get('password', '')))) )
+		{
+			return Redirect::intended('/');
+		}else{
+			return Redirect::to('user/login')->withErrors(
+				'Invalid username and/or password.'
+			);
+		}
 	}
 
 
@@ -69,7 +77,6 @@ class UserController extends BaseController {
 		});
 
 		return View::make('notify',array('messages' => array('Thank you for registering. Please check your email to verify your email address.')));
-
 	}
 
 	public function getVerify($code)
@@ -91,8 +98,7 @@ class UserController extends BaseController {
 
 		//render notification page
 		array_push($messages, 'Thanks, your email is now verified!');
-		return View::make('notify', array('messages' => $messages));
-		
+		return View::make('notify', array('messages' => $messages));		
 	}
 
 }
