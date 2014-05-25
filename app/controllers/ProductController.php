@@ -2,9 +2,9 @@
 
 class ProductController extends BaseController {
 
-	public function getAddProduct()
+	public function getAdd()
 	{
-		$categoryTree = Category::getCategoryTree('test');
+		$categoryTree = Category::getCategoryTree('foo');
 
 var_dump($categoryTree);
 

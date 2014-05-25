@@ -18,7 +18,6 @@ class Test extends Migration {
 			$table->timestamps();
 
 			$table->integer('parent')->unsigned();
-	        $table->string('category_type');
 	        $table->string('name');
 	        $table->string('type');
 

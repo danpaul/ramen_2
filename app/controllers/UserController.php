@@ -76,7 +76,7 @@ class UserController extends BaseController {
 			$message->to($user->email)->subject('Welcome!');
 		});
 
-		return View::make('notify',array('messages' => array('Thank you for registering. Please check your email to verify your email address.')));
+		return View::make('notify', array('messages' => array('Thank you for registering. Please check your email to verify your email address.')));
 	}
 
 	public function getVerify($code)
