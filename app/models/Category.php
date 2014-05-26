@@ -4,7 +4,25 @@
 
 class Category extends Eloquent {
 
-	// private static $categoryTrees;
+	/**
+	* returns an array of cached variables
+	*
+	*  cached variables:
+	*    'categoryTrees' => nested array of category trees. indexed by type
+	*    'categoryLists' => array of flattened category trees, indexed by type
+	*/
+	public static function getCacheVariables()
+	{
+		return array('categoryTrees', 'categoryLists');
+	}
+
+	public static function clearCache()
+	{
+		foreach( self::getCacheVariables() as $cacheKey )
+		{
+			Cache::forget($cacheKey);
+		}
+	}
 
 
 	/**
@@ -46,7 +64,7 @@ class Category extends Eloquent {
 
 	    foreach( $categories as &$category )
 	    {
-	        $category['subcategories'] = array();
+	        $category['children'] = array();
 	        $map[$category['id']] = &$category;
 	    }
 
@@ -54,7 +72,7 @@ class Category extends Eloquent {
 	    {
 	    	if( $category['parent'] !== NULL )
 	    	{
-	    		$map[$category['parent']]['subcategories'][] = &$category;
+	    		$map[$category['parent']]['children'][] = &$category;
 	    	}	        
 	    }
 
@@ -69,4 +87,41 @@ class Category extends Eloquent {
 	    return $tree;
 	}
 
+	public static function getList(&$tree)
+	{
+		$list = array();
+		if( is_array($tree) )
+		{
+			foreach( $tree as $child )
+			{
+				array_push($list, $child['name']);
+				if( !empty($child['children']) )
+				{
+					array_merge($list, self::getList($child['children']));
+				}				
+			}
+		}else{
+			if( isset($tree['name']) )
+			{
+				array_push($list, $tree['name']);
+			}			
+		}
+		return $list;
+	}
+
+	public static function getLists()
+	{
+		if( !(Cache::has('categoryLists')) )
+		{
+			$categoryTrees = self::getTrees();
+			$categoryLists = array();
+
+			foreach( Config::get('taxonomy.categoryTypes' ) as $categoryType )
+			{
+				$categoryLists[$categoryType] = self::getList($categoryTrees[$categoryType]);
+			}
+			Cache::forever('categoryLists', $categoryLists);
+		}
+		return Cache::get('categoryLists');
+	}
 }

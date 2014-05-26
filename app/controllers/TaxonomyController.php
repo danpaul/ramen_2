@@ -17,8 +17,14 @@ die();
 	public function getEdit()
 	{
 		return View::make('taxonomy.edit', array(
-			'categoryTrees' => Category::getTrees()
+			'categoryTrees' => Category::getTrees(),
+			'categoryLists' => Category::getLists()
 		));
+	}
+
+	public function postAdd()
+	{
+echo 'add';
 	}
 
 }
