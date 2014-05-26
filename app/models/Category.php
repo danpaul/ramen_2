@@ -4,8 +4,27 @@
 
 class Category extends Eloquent {
 
-	// protected $table = 'categories';
-	// public $timestamps = FALSE;
+	// private static $categoryTrees;
+
+
+	/**
+	* @return - An arry of category trees (nested arrays) containing all 
+	*    types defined in the 'taxonomy' config file.
+	*/
+	public static function getTrees()
+	{
+		if( !(Cache::has('categoryTrees')) )
+		{
+			$categoryTress = array();
+			foreach( Config::get('taxonomy.categoryTypes' ) as $categoryType )
+			{
+				$categoryTrees[$categoryType] = self::getTree($categoryType);
+			}
+			Cache::forever('categoryTrees', $categoryTrees);
+		}
+		return Cache::get('categoryTrees');
+	}
+
 
 	/**
 	*  Takes the category type as string and returns an array reprsenting the
@@ -18,7 +37,7 @@ class Category extends Eloquent {
 	*    array element contains a `subcategories` key with an array of
 	*    categories or an empty array if there are no sub-categories.
 	*/
-	public static function getCategoryTree($type)
+	public static function getTree($type)
 	{
 		$categories = self::where('type', '=', $type)->get()->toArray();
 

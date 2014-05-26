@@ -4,24 +4,21 @@ class TaxonomyController extends BaseController {
 
 	public function getAll()
 	{
-		$categoryTree = Category::getCategoryTree('foo');
+		// $categoryTrees = Category::getCategoryTrees();
 
-var_dump($categoryTree);
+		// var_dump(Config::get('taxonomy.categoryTypes'));
 
-
+var_dump(Category::getTrees());
 die();
 
 
 	}
 
-	public function getAdd()
+	public function getEdit()
 	{
-
-
-
-		// View::make('taxonomy.add', array(
-		// 	'categoryTree' => 
-		// ));
+		return View::make('taxonomy.edit', array(
+			'categoryTrees' => Category::getTrees()
+		));
 	}
 
 }
