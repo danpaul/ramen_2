@@ -1,45 +1,20 @@
-<?php
+@foreach( Config::get('taxonomy.categoryTypes' ) as $categoryType )
 
-	function recurseTree($tree)
-	{
-		if( !empty($tree) )
-		{
-			echo '<li>';
-				echo $tree['name'];
-				if( !empty($tree['children']) )
-				{
-					echo '<ul>';
-						recurseTree($tree['children']);
-					echo '</ul>';
-				}
-			echo '</li>';
-		}
-	}
-
-var_dump($categoryLists);
-die();
-
-?>
-
-@foreach( Config::get('taxonomy.categoryTypes' ) as $taxonomyType )
-	<ul>{{ $taxonomyType }}
-		<?php recurseTree($categoryTrees[$taxonomyType]); ?>
+	<ul>{{ $categoryType }}
+		<?php Ramen::recurseTree($categoryTrees[$categoryType]); ?>
 	</ul>
+
+	{{ Form::open(array('action' => array('TaxonomyController@postAddCategory', $categoryType ))) }}
+
+		{{ Form::label('name', 'Name: ') }}
+		{{ Form::text('name') }}
+
+		{{ Form::label('parent', 'Parent: ') }}
+
+		{{ Form::select('parent', $categoryLists[$categoryType]) }}
+		
+		{{ Form::submit('Add') }}
+
+	{{ Form::close() }}
+
 @endforeach
-
-{{ Form::open(array('action' => 'TaxonomyController@postAdd' )) }}
-
-	Name: <input type="text" name="name">
-	Parent:
-		<select name="parent_id">
-			<option value=""></option>
-			<?php
-				// foreach ($_category_list as $category) {
-				// 	echo '<option value="'. $category['id']. '">'. $category['name']. '</option>';					
-				// }
-			?>
-		</select>
-
-	{{ Form::submit('Add') }}
-
-{{ Form::close() }}

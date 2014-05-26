@@ -14,7 +14,7 @@ class UpdateCategoriesParentAddDefault extends Migration {
 	{
 		Schema::table('categories', function($table)
 		{
-		    $table->integer('parent')->unsigned()->default(null);
+		    $table->integer('parent')->unsigned()->default(null)->nullable();
 		});
 	}
 

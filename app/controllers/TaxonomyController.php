@@ -22,9 +22,31 @@ die();
 		));
 	}
 
-	public function postAdd()
+	public function postAddCategory($categoryType)
 	{
-echo 'add';
-	}
+		// redirect with error if not exists
+		if( !in_array($categoryType, Config::get('taxonomy.categoryTypes') ))
+		{
+			return Redirect::back()->withErrors('Invalid category type.');
+		}
 
+		// confirm parent exists or set to NULL
+		if( !empty(Input::get('parent'))
+			&& !Category::find(Input::get('parent'))->exists )
+		{
+			Input::set('parent', NULL);
+		}
+
+		// create category
+		$category = new Category;
+
+		$category->type = $categoryType;
+		$category->parent = Input::get('parent');
+		$category->name = Input::get('name', '');
+
+		$category->save();
+
+		return Redirect::back();
+
+	}
 }

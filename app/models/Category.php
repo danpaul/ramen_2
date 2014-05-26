@@ -16,6 +16,18 @@ class Category extends Eloquent {
 		return array('categoryTrees', 'categoryLists');
 	}
 
+	public static function boot()
+	{
+		parent::boot();
+
+		self::created(function($n){ self::clearCache(); });
+		self::updated(function($n){ self::clearCache(); });
+		self::saved(function($n){ self::clearCache(); });
+		self::deleted(function($n){ self::clearCache(); });
+		self::restored(function($n){ self::clearCache(); });
+
+	}
+
 	public static function clearCache()
 	{
 		foreach( self::getCacheVariables() as $cacheKey )
@@ -23,7 +35,6 @@ class Category extends Eloquent {
 			Cache::forget($cacheKey);
 		}
 	}
-
 
 	/**
 	* @return - An arry of category trees (nested arrays) containing all 
@@ -42,7 +53,6 @@ class Category extends Eloquent {
 		}
 		return Cache::get('categoryTrees');
 	}
-
 
 	/**
 	*  Takes the category type as string and returns an array reprsenting the
@@ -87,28 +97,32 @@ class Category extends Eloquent {
 	    return $tree;
 	}
 
-	public static function getList(&$tree)
+	public static function getList(&$trees)
 	{
+
 		$list = array();
-		if( is_array($tree) )
+
+		foreach( $trees as $tree )
 		{
-			foreach( $tree as $child )
+			$list[$tree['id']] = $tree;
+
+			$list[$tree['id']] = $tree['name'];
+
+			if( !empty($tree['children']) )
 			{
-				array_push($list, $child['name']);
-				if( !empty($child['children']) )
-				{
-					array_merge($list, self::getList($child['children']));
-				}				
-			}
-		}else{
-			if( isset($tree['name']) )
-			{
-				array_push($list, $tree['name']);
-			}			
+				$children = self::getList($tree['children']);
+				$list = $list + $children;
+			}				
 		}
+
 		return $list;
 	}
 
+	/**
+	*  @return - A 2D array indexed by category type. Each category type array
+	*    contains an array of categories belonging to that type of the form
+	*    id => type
+	*/
 	public static function getLists()
 	{
 		if( !(Cache::has('categoryLists')) )
@@ -120,8 +134,10 @@ class Category extends Eloquent {
 			{
 				$categoryLists[$categoryType] = self::getList($categoryTrees[$categoryType]);
 			}
+
 			Cache::forever('categoryLists', $categoryLists);
 		}
 		return Cache::get('categoryLists');
 	}
+
 }
