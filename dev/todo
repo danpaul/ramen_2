@@ -6,6 +6,7 @@
 - remove timestamps from cat. table
 
 - fix orphan category (when parent gets deleted, move up or set to root element)
+	+ moving parent to parent of child
 
 
 --------------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 class Ramen
 {
 	/** used for displaying category tree */
-	public static function recurseTree($trees)
+	public static function recurseTree($trees, $callback = NULL)
 	{
 		if( is_array($trees) )
 		{
@@ -13,10 +13,11 @@ class Ramen
 			{
 				echo '<li>';
 					echo $tree['name'];
+					$callback($tree);
 					if( !empty($tree['children']) )
 					{
 						echo '<ul>';
-							self::recurseTree($tree['children']);
+							self::recurseTree($tree['children'], $callback);
 						echo '</ul>';
 					}
 				echo '</li>';

@@ -10,10 +10,11 @@ class Category extends Eloquent {
 	*  cached variables:
 	*    'categoryTrees' => nested array of category trees. indexed by type
 	*    'categoryLists' => array of flattened category trees, indexed by type
+	*    'categoryChildren' => array indexed by category id of arrays of children
 	*/
 	public static function getCacheVariables()
 	{
-		return array('categoryTrees', 'categoryLists');
+		return array('categoryTrees', 'categoryLists', 'categoryChildren');
 	}
 
 	public static function boot()
@@ -138,6 +139,56 @@ class Category extends Eloquent {
 			Cache::forever('categoryLists', $categoryLists);
 		}
 		return Cache::get('categoryLists');
+	}
+
+	/**
+	*  Sets an assoc. array indexed by category id. Each element contains an
+	*    array of children of the given element.
+	*/
+	// public static function getChildren($id)
+
+	/**
+	*  Sets the cache for category children. Indexed by cat. id.
+	*/
+	public static function setChildren($id)
+	{
+		if( !(Cache::has('categoryChildren')) )
+		{
+			$children = array();
+			$trees = self::getTrees();
+			foreach( $trees as $tree )
+			{
+				self::buildChildren($tree, $children);
+			}			
+		}
+	}
+
+	private static function buildChildren(&$elements, &$childrenArray, $parent = NULL)
+	{
+		foreach( $elements as $element )
+		{
+			$children[$element['id']] = array();
+			if( is_array($element['children']) )
+			{
+
+			}
+		}
+
+	}
+
+	/**
+	*  Takes valid $id and $parentId.
+	*  Sets $id's parent to $parentId and ensures no category nodes are orphaned
+	*/
+	public static function setParent($id, $parentId)
+	{
+		$category = self::find($id);
+		if( $category === NULL ){ return NULL; }
+
+		if( $category->parent !== $parent )
+		{
+
+		}
 	}
 
 }

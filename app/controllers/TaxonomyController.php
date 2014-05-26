@@ -14,6 +14,28 @@ die();
 
 	}
 
+	public static function postEditCategory($id)
+	{
+		$category = Category::find($id);
+		self::setParent();
+
+		if( $category === NULL )
+		{
+			return Redirect::back()->withErrors('Invalid category id.');
+		}
+
+		//update name
+		$category->name = Input::get('name', '');
+
+		//update parent
+		// Category::setParent($id, Input::get('parent', NULL));
+		$category->parent = Input::get('parent', NULL);
+
+		$category->save();
+		return Redirect::back();
+
+	}
+
 	public function getEdit()
 	{
 		return View::make('taxonomy.edit', array(
@@ -21,6 +43,9 @@ die();
 			'categoryLists' => Category::getLists()
 		));
 	}
+
+
+
 
 	public function postAddCategory($categoryType)
 	{
@@ -30,14 +55,8 @@ die();
 			return Redirect::back()->withErrors('Invalid category type.');
 		}
 
-		// confirm parent exists or set to NULL
-		if( !empty(Input::get('parent'))
-			&& !Category::find(Input::get('parent'))->exists )
-		{
-			Input::set('parent', NULL);
-		}
+		self::setParent();
 
-		// create category
 		$category = new Category;
 
 		$category->type = $categoryType;
@@ -47,6 +66,15 @@ die();
 		$category->save();
 
 		return Redirect::back();
+	}
+
+	private static function setParent()
+	{
+		if( !empty(Input::get('parent'))
+			&& !Category::find(Input::get('parent'))->exists )
+		{
+			Input::set('parent', NULL);
+		}
 
 	}
 }

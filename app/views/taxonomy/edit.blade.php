@@ -1,20 +1,61 @@
+<?php foreach( $errors->all() as $error ){ ?>
+
+	<p><?php echo $error ?></p>
+
+<?php } ?>
+
 @foreach( Config::get('taxonomy.categoryTypes' ) as $categoryType )
 
-	<ul>{{ $categoryType }}
-		<?php Ramen::recurseTree($categoryTrees[$categoryType]); ?>
+	<ul><h2>{{ $categoryType }}</h2>
+		<?php Ramen::recurseTree($categoryTrees[$categoryType], function($category) use($categoryLists, $categoryType){ ?>
+			<?php// global $categoryLists, $categoryType; ?>
+			<div class="taxonomy-edit">
+
+				{{ Form::open(array('action' => array('TaxonomyController@postEditCategory', $category['id']) )); }}
+
+					{{ Form::label('name', 'Name: '); }}
+					{{ Form::text('name', $category['name']); }}
+					{{ Form::label('parent', 'Parent: '); }}
+					{{
+						Form::select(
+							'parent',
+							array('' => '') + $categoryLists[$categoryType],
+							$category['parent']); 
+					}}
+					{{ Form::submit('Edit'); }}
+
+				{{ Form::close(); }}
+			
+<!-- 				<a
+					href="<?php //echo action('', $category['id']); ?>"
+				?>rename</a> -->
+
+			</div>
+			
+		<?php }); ?>
 	</ul>
 
-	{{ Form::open(array('action' => array('TaxonomyController@postAddCategory', $categoryType ))) }}
+	{{ Form::open(array('action' => array('TaxonomyController@postAddCategory', $categoryType ))); }}
 
-		{{ Form::label('name', 'Name: ') }}
-		{{ Form::text('name') }}
+		{{ Form::label('name', 'Name: '); }}
+		{{ Form::text('name'); }}
 
-		{{ Form::label('parent', 'Parent: ') }}
+		{{ Form::label('parent', 'Parent: '); }}
 
-		{{ Form::select('parent', $categoryLists[$categoryType]) }}
+		{{
+			Form::select(
+				'parent',
+				array('' => '') + $categoryLists[$categoryType],
+				''
+			); 
+		}}
+
+		{{-- Form::select('parent', $categoryLists[$categoryType]); --}}
 		
-		{{ Form::submit('Add') }}
+		{{ Form::submit('Add'); }}
 
-	{{ Form::close() }}
+	{{ Form::close(); }}
+
+	<hr>
 
 @endforeach
