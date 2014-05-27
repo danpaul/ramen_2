@@ -26,12 +26,13 @@ die();
 
 		//update name
 		$category->name = Input::get('name', '');
+		$category->save();
 
 		//update parent
-		// Category::setParent($id, Input::get('parent', NULL));
-		$category->parent = Input::get('parent', NULL);
+		Category::setParent($id, Input::get('parent'));
+		// $category->parent = Input::get('parent', NULL);
 
-		$category->save();
+		
 		return Redirect::back();
 
 	}

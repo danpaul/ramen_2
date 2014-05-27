@@ -142,38 +142,67 @@ class Category extends Eloquent {
 	}
 
 	/**
-	*  Sets an assoc. array indexed by category id. Each element contains an
+	*  @return - an assoc. array indexed by category id. Each element contains an
 	*    array of children of the given element.
 	*/
-	// public static function getChildren($id)
+	public static function getChildren()
+	{
+		if( !(Cache::has('categoryChildren')) )
+		{
+			self::setChildren();
+		}
+		return Cache::get('categoryChildren');
+	}
 
 	/**
 	*  Sets the cache for category children. Indexed by cat. id.
 	*/
-	public static function setChildren($id)
+	private static function setChildren()
 	{
-		if( !(Cache::has('categoryChildren')) )
-		{
-			$children = array();
-			$trees = self::getTrees();
-			foreach( $trees as $tree )
-			{
-				self::buildChildren($tree, $children);
-			}			
-		}
-	}
+		$children = array();
+		$trees = self::getTrees();
 
-	private static function buildChildren(&$elements, &$childrenArray, $parent = NULL)
-	{
-		foreach( $elements as $element )
+		foreach( $trees as $tree )
 		{
-			$children[$element['id']] = array();
-			if( is_array($element['children']) )
+			foreach( $tree as $category )
 			{
-
+				self::buildChildren($children, $category);
 			}
 		}
 
+		Cache::forever('categoryChildren', $children);
+	}
+
+	private static function buildChildren(&$childrenArray, &$category)
+	{
+			$childrenArray[$category['id']] = self::getCategoryChildren($category);
+
+			if( !empty($category['children']) )
+			{
+				foreach( $category['children'] as &$child )
+				{
+					self::buildChildren($childrenArray, $child);
+				}
+			}
+	}
+
+	public static function getCategoryChildren(&$category)
+	{
+		$children = array();
+
+		foreach( $category['children'] as &$child )
+		{
+			array_push($children, $child['id']);
+			if( !empty($child['children']) )
+			{
+				$results = self::getCategoryChildren($child);
+				foreach( $results as $result)
+				{
+					array_push($children, $result);
+				}
+			}
+		}
+		return $children;
 	}
 
 	/**
@@ -182,12 +211,15 @@ class Category extends Eloquent {
 	*/
 	public static function setParent($id, $parentId)
 	{
+
+		$children = self::getChildren();
+
 		$category = self::find($id);
 		if( $category === NULL ){ return NULL; }
 
-		if( $category->parent !== $parent )
+		if( $category->parent !== $parentId )
 		{
-
+			// self::
 		}
 	}
 
