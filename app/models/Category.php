@@ -219,12 +219,14 @@ class Category extends Eloquent {
 	}
 
 	/**
-	* @return - returns TRUE if categoryOne is a child of categoryTwo
+	* @return - returns TRUE if categoryTwo is a child of categoryOne
 	*/
 	public static function isChild($categoryOneId, $categoryTwoId)
 	{
 		$children = self::getChildren();
-		return(in_array($categoryOneId, $children[$categoryTwoId]));
+// var_dump($children);
+// die();
+		return(in_array($categoryTwoId, $children[$categoryOneId]));
 	}
 
 	/**
@@ -251,13 +253,14 @@ class Category extends Eloquent {
 		// if parent has changed
 		if( $child->parent !== $parentId )
 		{
+// self::clearCache();
 			$child->parent = $parentId;
 			//if parent is a child of category
 
-var_dump($parentId);
-var_dump($id);
-var_dump(self::isChild($id, $parentId));
-die();
+// var_dump($parentId);
+// var_dump($id);
+// var_dump(self::isChild($parentId, $id));
+// die();
 
 			if( self::isChild($id, $parentId) )
 			{

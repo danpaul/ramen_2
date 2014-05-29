@@ -17,8 +17,7 @@ die();
 	public static function postEditCategory($id)
 	{
 		$category = Category::find($id);
-		self::setParent();
-
+		
 		if( $category === NULL )
 		{
 			return Redirect::back()->withErrors('Invalid category id.');
@@ -29,7 +28,7 @@ die();
 		$category->save();
 
 		//update parent
-		Category::setParent($id, Input::get('parent'));
+		Category::setParent($id, self::getParent());
 
 		// $category->parent = Input::get('parent', NULL);
 
@@ -57,12 +56,15 @@ die();
 			return Redirect::back()->withErrors('Invalid category type.');
 		}
 
-		self::setParent();
+		// self::setParent();
+
+// var_dump(Input::get('parent'));
+// die();
 
 		$category = new Category;
 
 		$category->type = $categoryType;
-		$category->parent = Input::get('parent');
+		$category->parent = self::getParent();
 		$category->name = Input::get('name', '');
 
 		$category->save();
@@ -70,13 +72,14 @@ die();
 		return Redirect::back();
 	}
 
-	private static function setParent()
+	private static function getParent()
 	{
-		if( !empty(Input::get('parent'))
-			&& !Category::find(Input::get('parent'))->exists )
+		if( empty(Input::get('parent'))
+			|| !Category::find(Input::get('parent'))->exists )
 		{
-			Input::set('parent', NULL);
+			return NULL;			
 		}
+		return Input::get('parent');
 
 	}
 }
