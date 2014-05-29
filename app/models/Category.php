@@ -4,6 +4,8 @@
 
 class Category extends Eloquent {
 
+	protected static $categoryChildren;
+
 	/**
 	* returns an array of cached variables
 	*
@@ -147,11 +149,15 @@ class Category extends Eloquent {
 	*/
 	public static function getChildren()
 	{
-		if( !(Cache::has('categoryChildren')) )
+		if( empty(self::$categoryChildren) )
 		{
-			self::setChildren();
+			if( !(Cache::has('categoryChildren')) )
+			{
+				self::setChildren();
+			}
+			self::$categoryChildren = Cache::get('categoryChildren');
 		}
-		return Cache::get('categoryChildren');
+		return self::$categoryChildren;
 	}
 
 	/**
@@ -188,38 +194,80 @@ class Category extends Eloquent {
 
 	public static function getCategoryChildren(&$category)
 	{
-		$children = array();
+		// if( empty(self::$categoryChildren) )
+		// {
+			$children = array();
 
-		foreach( $category['children'] as &$child )
-		{
-			array_push($children, $child['id']);
-			if( !empty($child['children']) )
+			foreach( $category['children'] as &$child )
 			{
-				$results = self::getCategoryChildren($child);
-				foreach( $results as $result)
+				array_push($children, $child['id']);
+				if( !empty($child['children']) )
 				{
-					array_push($children, $result);
+					$results = self::getCategoryChildren($child);
+					foreach( $results as $result)
+					{
+						array_push($children, $result);
+					}
 				}
 			}
-		}
-		return $children;
+
+			return $children;
+
+			// self::$categoryChildren = $children;
+		// }
+		// return self::$categoryChildren;
+	}
+
+	/**
+	* @return - returns TRUE if categoryOne is a child of categoryTwo
+	*/
+	public static function isChild($categoryOneId, $categoryTwoId)
+	{
+		$children = self::getChildren();
+		return(in_array($categoryOneId, $children[$categoryTwoId]));
 	}
 
 	/**
 	*  Takes valid $id and $parentId.
 	*  Sets $id's parent to $parentId and ensures no category nodes are orphaned
+	*  If new parent is a child of self, new parent moves to top level and self
+	*    become a child of new parent
 	*/
 	public static function setParent($id, $parentId)
-	{
+	{		
+		$child = self::find($id);
 
-		$children = self::getChildren();
+		if( $child === NULL ){ return NULL; }
 
-		$category = self::find($id);
-		if( $category === NULL ){ return NULL; }
-
-		if( $category->parent !== $parentId )
+		if( $parentId === NULL )
 		{
-			// self::
+			$child->parent = NULL;
+			$child->save();
+			return;
+		}
+
+		$parent = self::find($parentId);
+
+		// if parent has changed
+		if( $child->parent !== $parentId )
+		{
+			$child->parent = $parentId;
+			//if parent is a child of category
+
+var_dump($parentId);
+var_dump($id);
+var_dump(self::isChild($id, $parentId));
+die();
+
+			if( self::isChild($id, $parentId) )
+			{
+				$parent->parent = NULL;
+				$parent->save();
+			// if parent is not a child of category (parent doesn't change)
+			}else{
+				$child->parent = $parentId;
+			}
+			$child->save();
 		}
 	}
 

@@ -30,6 +30,7 @@ die();
 
 		//update parent
 		Category::setParent($id, Input::get('parent'));
+
 		// $category->parent = Input::get('parent', NULL);
 
 		
