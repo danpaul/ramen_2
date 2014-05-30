@@ -194,28 +194,22 @@ class Category extends Eloquent {
 
 	public static function getCategoryChildren(&$category)
 	{
-		// if( empty(self::$categoryChildren) )
-		// {
-			$children = array();
+		$children = array();
 
-			foreach( $category['children'] as &$child )
+		foreach( $category['children'] as &$child )
+		{
+			array_push($children, $child['id']);
+			if( !empty($child['children']) )
 			{
-				array_push($children, $child['id']);
-				if( !empty($child['children']) )
+				$results = self::getCategoryChildren($child);
+				foreach( $results as $result)
 				{
-					$results = self::getCategoryChildren($child);
-					foreach( $results as $result)
-					{
-						array_push($children, $result);
-					}
+					array_push($children, $result);
 				}
 			}
+		}
 
-			return $children;
-
-			// self::$categoryChildren = $children;
-		// }
-		// return self::$categoryChildren;
+		return $children;
 	}
 
 	/**
@@ -224,8 +218,6 @@ class Category extends Eloquent {
 	public static function isChild($categoryOneId, $categoryTwoId)
 	{
 		$children = self::getChildren();
-// var_dump($children);
-// die();
 		return(in_array($categoryTwoId, $children[$categoryOneId]));
 	}
 
@@ -236,7 +228,10 @@ class Category extends Eloquent {
 	*    become a child of new parent
 	*/
 	public static function setParent($id, $parentId)
-	{		
+	{
+
+		if( $id === $parentId ){ return NULL; }
+
 		$child = self::find($id);
 
 		if( $child === NULL ){ return NULL; }
@@ -251,17 +246,11 @@ class Category extends Eloquent {
 		$parent = self::find($parentId);
 
 		// if parent has changed
-		if( $child->parent !== $parentId )
+		if( $child->parent !== $parent->id )
 		{
-// self::clearCache();
-			$child->parent = $parentId;
+			$child->parent = $parent->id;
+
 			//if parent is a child of category
-
-// var_dump($parentId);
-// var_dump($id);
-// var_dump(self::isChild($parentId, $id));
-// die();
-
 			if( self::isChild($id, $parentId) )
 			{
 				$parent->parent = NULL;
