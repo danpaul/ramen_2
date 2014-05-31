@@ -161,6 +161,16 @@ class Category extends Eloquent {
 	}
 
 	/**
+	*  @param - category id
+	*  @return - an array that category's children's ids
+	*/
+	public static function getCategorysChildren($id)
+	{
+		$children = self::getChildren();
+		return $children[$id];
+	}
+
+	/**
 	*  Sets the cache for category children. Indexed by cat. id.
 	*/
 	private static function setChildren()
@@ -175,10 +185,12 @@ class Category extends Eloquent {
 				self::buildChildren($children, $category);
 			}
 		}
-
 		Cache::forever('categoryChildren', $children);
 	}
 
+	/**
+	*  Builds the internal children array
+	*/
 	private static function buildChildren(&$childrenArray, &$category)
 	{
 			$childrenArray[$category['id']] = self::getCategoryChildren($category);
@@ -192,7 +204,10 @@ class Category extends Eloquent {
 			}
 	}
 
-	public static function getCategoryChildren(&$category)
+	/**
+	*  Recursive helper function to build children array.
+	*/
+	private static function getCategoryChildren(&$category)
 	{
 		$children = array();
 
@@ -208,7 +223,6 @@ class Category extends Eloquent {
 				}
 			}
 		}
-
 		return $children;
 	}
 
@@ -261,6 +275,24 @@ class Category extends Eloquent {
 			}
 			$child->save();
 		}
+	}
+
+	/**
+	*  Deletes that category and sets the children of that catgorie's parents
+	*    to the parent of that category  
+	*/
+	public function remove()
+	{
+		$children = Self::where('parent', '=', $this->id)->get();
+
+		foreach( $children as $child )
+		{
+			$child->parent = $this->parent;
+			$child->save();
+		}
+
+		$this->delete();
+
 	}
 
 }

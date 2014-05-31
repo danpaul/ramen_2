@@ -30,9 +30,6 @@ die();
 		//update parent
 		Category::setParent($id, self::getParent());
 
-		// $category->parent = Input::get('parent', NULL);
-
-		
 		return Redirect::back();
 
 	}
@@ -45,8 +42,18 @@ die();
 		));
 	}
 
+	public static function postDeleteCategory($id)
+	{
+		$category = Category::find($id);
+		
+		if( $category === NULL )
+		{
+			return Redirect::back()->withErrors('Invalid category id.');
+		}
 
-
+		$category->remove();
+		return Redirect::back();
+	}
 
 	public function postAddCategory($categoryType)
 	{
@@ -55,11 +62,6 @@ die();
 		{
 			return Redirect::back()->withErrors('Invalid category type.');
 		}
-
-		// self::setParent();
-
-// var_dump(Input::get('parent'));
-// die();
 
 		$category = new Category;
 

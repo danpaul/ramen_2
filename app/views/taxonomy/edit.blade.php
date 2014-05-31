@@ -8,7 +8,7 @@
 
 	<ul><h2>{{ $categoryType }}</h2>
 		<?php Ramen::recurseTree($categoryTrees[$categoryType], function($category) use($categoryLists, $categoryType){ ?>
-			<?php// global $categoryLists, $categoryType; ?>
+
 			<div class="taxonomy-edit">
 
 				{{ Form::open(array('action' => array('TaxonomyController@postEditCategory', $category['id']) )); }}
@@ -25,10 +25,11 @@
 					{{ Form::submit('Edit'); }}
 
 				{{ Form::close(); }}
-			
-<!-- 				<a
-					href="<?php //echo action('', $category['id']); ?>"
-				?>rename</a> -->
+
+				{{ Form::open(array('class' => 'delete-form', 'action' => array('TaxonomyController@postDeleteCategory', $category['id']) )); }}
+					{{ Form::submit('Delete'); }}
+				{{ Form::close(); }}			
+
 
 			</div>
 			
