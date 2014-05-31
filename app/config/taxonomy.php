@@ -19,6 +19,13 @@ return array(
 		'bar',
 		'baz'
 
+	),
+
+	'tagTypes' => array(
+
+		'bleep',
+		'bloop',
+		'blop'
 	)
 
 );

@@ -1,4 +1,6 @@
 
+- category and tag type should really be in a table rather than config.
+
 - add mail config and remove creds
 
 - index only first 5 or so? characters of verification code

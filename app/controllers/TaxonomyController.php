@@ -14,6 +14,28 @@ die();
 
 	}
 
+/*******************************************************************************
+
+			GENERAL
+
+*******************************************************************************/
+
+	public function getEdit()
+	{
+		return View::make('taxonomy.edit', array(
+			'categoryTrees' => Category::getTrees(),
+			'categoryLists' => Category::getLists(),
+			'tags' => Tag::getAll()
+		));
+	}
+
+
+/*******************************************************************************
+
+			CATEGORIES
+
+*******************************************************************************/
+
 	public static function postEditCategory($id)
 	{
 		$category = Category::find($id);
@@ -32,14 +54,6 @@ die();
 
 		return Redirect::back();
 
-	}
-
-	public function getEdit()
-	{
-		return View::make('taxonomy.edit', array(
-			'categoryTrees' => Category::getTrees(),
-			'categoryLists' => Category::getLists()
-		));
 	}
 
 	public static function postDeleteCategory($id)
@@ -82,6 +96,48 @@ die();
 			return NULL;			
 		}
 		return Input::get('parent');
+	}
 
+
+/*******************************************************************************
+
+			TAGS
+
+*******************************************************************************/
+
+	public static function postAddTag($type)
+	{
+		if( !self::isValidTag($type) )
+		{
+			return Redirect::back()->withErrors('Invalid tag type.');
+		}
+
+		$tag = new Tag();
+		$tag->type = $type;
+		$tag->name = Input::get('name', '');
+		$tag->save();
+
+		return Redirect::back();
+
+	}
+
+	public static function postEditTag($id)
+	{
+		$tag = Tag::find($id);
+		$tag->name = Input::get('name', '');
+		$tag->save();
+		return Redirect::back();
+	}
+
+	public static function postDeleteTag($id)
+	{
+		$tag = Tag::find($id);
+		$tag->delete();
+		return Redirect::back();
+	}
+
+	private static function isValidTag($type)
+	{
+		return in_array($type, Config::get('taxonomy.tagTypes') );
 	}
 }
