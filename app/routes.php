@@ -16,6 +16,8 @@ Route::controller('product', 'ProductController');
 
 Route::controller('admin/taxonomy', 'TaxonomyController');
 
+Route::controller('admin/product', 'ProductController');
+
 Route::get('verify/{code}', function(){ });
 
 

@@ -2,24 +2,40 @@
 
 class ProductController extends BaseController {
 
-	public function getAdd()
+	public function getAll()
 	{
-		$categoryTree = Category::getCategoryTree('foo');
+		return View::make('product.all', array('products' => Product::all()));
+	}
 
-var_dump($categoryTree);
-
-
-die();
-		// var_dump($categories);;
-
-
-
-		// require_once $GLOBALS['config']['models']. '/taxonomy.php';
-		// $taxonomy = new Taxonomy_model();
-		// View::$data['categories'] = $taxonomy->get_categories(self::PRODUCT_CATEGORY_TYPE);
-		// View::$data['tags'] = $taxonomy->get_tags(self::PRODUCT_CATEGORY_TYPE);
-		// require_once($GLOBALS['config']['views']. '/admin_product_add.php');
+	public function getEdit($id)
+	{
+		return View::make('product.edit', array('product' => Product::find($id)));
 
 	}
 
+	public function getAdd()
+	{
+		return View::make('product.add');
+	}
+
+	public function postAdd()
+	{
+		$product = new Product();
+
+		$product->name = Input::get('name', '');
+		$product->sku = Input::get('sku', '');
+		$product->description = Input::get('description', '');
+		$product->price = Input::get('price', 0.00);
+		$product->inventory = Input::get('inventory', 0);
+		$product->save();
+
+		return Redirect::action('ProductController@getAll');
+	}
+
+	public function postUpdate()
+	{
+		$product = new Product(Input::all());
+		$product->save();
+		return Redirect::action('ProductController@getAll');
+	}
 }

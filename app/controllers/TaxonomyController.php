@@ -2,18 +2,6 @@
 
 class TaxonomyController extends BaseController {
 
-	public function getAll()
-	{
-		// $categoryTrees = Category::getCategoryTrees();
-
-		// var_dump(Config::get('taxonomy.categoryTypes'));
-
-var_dump(Category::getTrees());
-die();
-
-
-	}
-
 /*******************************************************************************
 
 			GENERAL

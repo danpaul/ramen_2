@@ -1,3 +1,6 @@
+- add soft delete to products, shoping cart
+
+-add tag archive
 
 - category and tag type should really be in a table rather than config.
 
