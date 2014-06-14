@@ -10,7 +10,6 @@ class ProductController extends BaseController {
 	public function getEdit($id)
 	{
 		return View::make('product.edit', array('product' => Product::find($id)));
-
 	}
 
 	public function getAdd()
@@ -20,22 +19,20 @@ class ProductController extends BaseController {
 
 	public function postAdd()
 	{
-		$product = new Product();
-
-		$product->name = Input::get('name', '');
-		$product->sku = Input::get('sku', '');
-		$product->description = Input::get('description', '');
-		$product->price = Input::get('price', 0.00);
-		$product->inventory = Input::get('inventory', 0);
-		$product->save();
-
+		Product::create(Input::all());
 		return Redirect::action('ProductController@getAll');
 	}
 
-	public function postUpdate()
+	public function postUpdate($id)
 	{
-		$product = new Product(Input::all());
+		if( !$product = Product::find($id) )
+		{
+			return Redirect::action('ProductController@getAll')
+				->withErrors('Invalid product id.');
+		}
+		$product->fill(Input::all());
 		$product->save();
-		return Redirect::action('ProductController@getAll');
+		return Redirect::action('ProductController@getAll')
+				->with('messages', array('Your product has been updated.'));
 	}
 }

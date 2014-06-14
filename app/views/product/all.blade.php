@@ -1,3 +1,13 @@
+@foreach( $errors->all() as $error )
+	<div>{{ $error }}</div>
+@endforeach
+
+@if(Session::has('messages'))
+	@foreach( Session::get('messages') as $message )
+		<div>{{ $message }}</div>
+	@endforeach
+@endif
+
 <h1>Products</h1>
 
 <table>
@@ -10,7 +20,7 @@
 			<th>Inventory</th>
 			<th>Edit</th>
 		</tr>
-
+ 
 		@foreach( $products as $product )
 
 			<?php $editLink = action('ProductController@getEdit', $product->id); ?>
