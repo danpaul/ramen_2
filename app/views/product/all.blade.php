@@ -23,8 +23,6 @@
  
 		@foreach( $products as $product )
 
-			<?php $editLink = action('ProductController@getEdit', $product->id); ?>
-
 			<tr>
 				<th>{{{ $product->name }}}</th>
 				<th>{{{ $product->sku }}}</th>

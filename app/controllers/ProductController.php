@@ -9,7 +9,13 @@ class ProductController extends BaseController {
 
 	public function getEdit($id)
 	{
-		return View::make('product.edit', array('product' => Product::find($id)));
+		return View::make(
+			'product.edit',
+			array(
+				'product' => Product::find($id),
+				'tags' => Tag::getAll()
+			)
+		);
 	}
 
 	public function getAdd()
@@ -34,5 +40,17 @@ class ProductController extends BaseController {
 		$product->save();
 		return Redirect::action('ProductController@getAll')
 				->with('messages', array('Your product has been updated.'));
+	}
+
+	public function postUpdateTags($id)
+	{
+		if( !$product = Product::find($id) )
+		{
+			return Redirect::back()->withErrors('Invalid id.');
+		}
+
+		$product->tags()->sync(Input::get('ids'));
+		return Redirect::back();
+
 	}
 }

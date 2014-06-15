@@ -11,4 +11,9 @@ class Product extends Eloquent {
 		'price' =>0.00,
 		'inventory' => 0
 	);
+
+	public function tags()
+	{
+		return $this->belongsToMany('Tag');
+	}
 }
