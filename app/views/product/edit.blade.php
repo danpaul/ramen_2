@@ -20,7 +20,6 @@
 {{ Form::close(); }}
 
 
-
 <h1>Tags</h1>
 
 {{ Form::open(array('action' => array('ProductController@postUpdateTags', $product->id) )); }}
@@ -33,7 +32,16 @@
 
 						<li>
 							{{ Form::label($tag->name. ':'); }}
-							{{ Form::checkbox('ids[]', $tag->id); }}
+							@if( $product->hasTag($tag->id))
+
+								{{ Form::checkbox('ids[]', $tag->id, array('checked' => 'true')); }}
+
+							@else
+
+
+								{{ Form::checkbox('ids[]', $tag->id); }}
+
+							@endif
 						</li>
 
 				@endforeach

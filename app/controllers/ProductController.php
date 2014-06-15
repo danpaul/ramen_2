@@ -49,7 +49,7 @@ class ProductController extends BaseController {
 			return Redirect::back()->withErrors('Invalid id.');
 		}
 
-		$product->tags()->sync(Input::get('ids'));
+		$product->tags()->sync(Input::get('ids', array()));
 		return Redirect::back();
 
 	}
