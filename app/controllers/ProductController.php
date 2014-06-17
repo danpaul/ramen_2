@@ -13,7 +13,9 @@ class ProductController extends BaseController {
 			'product.edit',
 			array(
 				'product' => Product::find($id),
-				'tags' => Tag::getAll()
+				'tags' => Tag::getAll(),
+				'categoryTrees' => Category::getTrees(),
+				'categoryLists' => Category::getLists()
 			)
 		);
 	}
@@ -40,6 +42,11 @@ class ProductController extends BaseController {
 		$product->save();
 		return Redirect::action('ProductController@getAll')
 				->with('messages', array('Your product has been updated.'));
+	}
+
+	public function postUpdateCategories($id)
+	{
+
 	}
 
 	public function postUpdateTags($id)

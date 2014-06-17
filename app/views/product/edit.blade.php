@@ -20,6 +20,51 @@
 {{ Form::close(); }}
 
 
+
+<h1>Categories</h1>
+
+
+
+{{ Form::open(array('action' => array('ProductController@postUpdateCategories', $product['id']) )); }}
+
+	@foreach( Config::get('taxonomy.categoryTypes' ) as $categoryType )
+
+		<ul><h2>{{ $categoryType }}</h2>
+
+			<?php Ramen::recurseTree(
+					$categoryTrees[$categoryType],
+					function($category) use($categoryLists, $categoryType, $product){ ?>
+
+				<div class="taxonomy-edit">
+
+					{{ Form::label('name', 'Name: '); }}
+					
+					@if( $product->hasCategory($category['id']))
+
+						{{ Form::checkbox('ids[]', $category['id'], array('checked' => 'true')); }}
+
+					@else
+
+						{{ Form::checkbox('ids[]', $category['id']); }}
+
+					@endif
+					
+
+				</div>
+				
+			<?php }); ?>
+
+		</ul>
+
+		<hr>
+
+	@endforeach
+
+	{{ Form::submit('Update'); }}
+
+{{ Form::close(); }}
+
+
 <h1>Tags</h1>
 
 {{ Form::open(array('action' => array('ProductController@postUpdateTags', $product->id) )); }}
