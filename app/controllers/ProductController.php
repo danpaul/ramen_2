@@ -46,7 +46,13 @@ class ProductController extends BaseController {
 
 	public function postUpdateCategories($id)
 	{
+		if( !$product = Product::find($id) )
+		{
+			return Redirect::back()->withErrors('Invalid id.');
+		}
 
+		$product->categories()->sync(Input::get('ids', array()));
+		return Redirect::back();
 	}
 
 	public function postUpdateTags($id)

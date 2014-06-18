@@ -37,8 +37,6 @@
 
 				<div class="taxonomy-edit">
 
-					{{ Form::label('name', 'Name: '); }}
-					
 					@if( $product->hasCategory($category['id']))
 
 						{{ Form::checkbox('ids[]', $category['id'], array('checked' => 'true')); }}
