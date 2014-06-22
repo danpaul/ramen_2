@@ -7,6 +7,24 @@
 |
 */
 
+Route::get('test', function(){
+	// Cart::associate('Product')->add('5', 'foo product', 2, 3.33);
+	// dd(Cart::content());
+
+$content = Cart::content();
+
+foreach($content as $row)
+{
+    var_dump($row);
+}
+
+	$item = Cart::get('468399581342505c47f4615b81bedaa9');
+
+	dd($item->product->description);
+	// dd($item->product);
+
+
+});
 
 Route::controller('user', 'UserController');
 
