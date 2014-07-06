@@ -12,7 +12,6 @@ class Ramen
 			foreach( $trees as $tree )
 			{
 				echo '<li>';
-					echo $tree['name'];
 					$callback($tree);
 					if( !empty($tree['children']) )
 					{

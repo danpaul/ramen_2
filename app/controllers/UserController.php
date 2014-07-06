@@ -7,6 +7,12 @@ class UserController extends BaseController {
 		return View::make('userLogin');
 	}
 
+	public function getLogout()
+	{
+		Auth::logout();
+		return Redirect::to('user/login');
+	}
+
 	public function postLogin()
 	{
 		if( (Auth::attempt(array(
@@ -46,7 +52,8 @@ class UserController extends BaseController {
 
 		if( $validator->fails() )
 		{
-			return Redirect::to('/user/login')->withErrors($validator);
+			// return Redirect::to('/user/login')->withErrors($validator);
+			return Redirect::back()->withErrors($validator);
 		}
 
 		// save user
@@ -92,7 +99,7 @@ class UserController extends BaseController {
 			return View::make('notify', array('messages' => $messages));
 		}
 
-		$user = $verification->user();
+		$user = $verification->user;
 		$user->verified = true;
 		$user->save();
 

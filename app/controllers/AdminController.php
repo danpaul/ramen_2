@@ -4,12 +4,12 @@ class AdminController extends BaseController {
 
 	public function getAddProduct()
 	{
-		$categoryTree = Category::getCategoryTree('test');
+// 		$categoryTree = Category::getCategoryTree('test');
 
-var_dump($categoryTree);
+// var_dump($categoryTree);
 
 
-die();
+// die();
 		// var_dump($categories);;
 
 

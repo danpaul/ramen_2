@@ -1,3 +1,9 @@
+<?php foreach( $errors->all() as $error ){ ?>
+
+	<p><?php echo $error ?></p>
+
+<?php } ?>
+
 <form
 	action="/user/register"
 	method="post"

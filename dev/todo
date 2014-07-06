@@ -1,3 +1,26 @@
+index:
+	-product created
+
+
+- restrict routes in product controller
+
+- remove admin controller
+
+
+- remove timestamps from prod images
+
+- image should have order number
+
+- featured image
+
+- delete image
+
+- image preview?
+
+
+
+- add conditional include of admin/user js
+
 - add soft delete to products, shoping cart
 
 -add tag archive

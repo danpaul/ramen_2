@@ -2,6 +2,12 @@
 
 class ProductController extends BaseController {
 
+/*******************************************************************************
+
+	ADMIN RESTRICTED ROUTES
+
+*******************************************************************************/
+
 	public function getAll()
 	{
 		return View::make('product.all', array('products' => Product::all()));
@@ -9,13 +15,16 @@ class ProductController extends BaseController {
 
 	public function getEdit($id)
 	{
+
+		$product = Product::find($id); 
 		return View::make(
 			'product.edit',
 			array(
-				'product' => Product::find($id),
+				'product' => $product,
 				'tags' => Tag::getAll(),
 				'categoryTrees' => Category::getTrees(),
-				'categoryLists' => Category::getLists()
+				'categoryLists' => Category::getLists(),
+				'productImages' => $product->productImages
 			)
 		);
 	}
@@ -64,6 +73,34 @@ class ProductController extends BaseController {
 
 		$product->tags()->sync(Input::get('ids', array()));
 		return Redirect::back();
+	}
+
+	public function postAddImages($id)
+	{
+		if( !$product = Product::find($id) )
+		{
+			return Redirect::back()->withErrors('Invalid id.');
+		}
+
+		// filter out deleted
+		$newImages = array_filter(Input::get('image'), 'self::isDeleted');
+		$productImages = array();
+
+		foreach( $newImages as $image )
+		{
+			array_push($productImages, new ProductImage($image));
+		}
+
+		$product->productImages()->delete();
+		$product->productImages()->saveMany($productImages);
+
+		return Redirect::back();
 
 	}
+
+	private static function isDeleted($field)
+	{
+		return( !isset($field['delete']) );
+	}
+
 }

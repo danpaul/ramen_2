@@ -7,24 +7,18 @@
 |
 */
 
+
+
+
 Route::get('test', function(){
-	// Cart::associate('Product')->add('5', 'foo product', 2, 3.33);
-	// dd(Cart::content());
-
-$content = Cart::content();
-
-foreach($content as $row)
-{
-    var_dump($row);
-}
-
-	$item = Cart::get('468399581342505c47f4615b81bedaa9');
-
-	dd($item->product->description);
-	// dd($item->product);
-
-
+	// dd(Auth::check());
+	// dd(Auth::user()->isAdmin());
+	dd(User::isAdmin());
+	// dd(Auth::user());
 });
+
+
+
 
 Route::controller('user', 'UserController');
 
@@ -44,7 +38,8 @@ Route::get('verify/{code}', function(){ });
 
 Route::get('/', function()
 {
-	echo 'home';
+	return CatalogController::getHome();
+	// echo 'home';
 });
 
 // Route::controller('admin', 'AdminController');

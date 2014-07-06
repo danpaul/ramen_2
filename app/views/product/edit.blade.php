@@ -37,6 +37,8 @@
 
 				<div class="taxonomy-edit">
 
+					{{{ $category['name'] }}}
+
 					@if( $product->hasCategory($category['id']))
 
 						{{ Form::checkbox('ids[]', $category['id'], array('checked' => 'true')); }}
@@ -99,3 +101,46 @@
 
 {{ Form::close(); }}
 
+<hr>
+
+<h1>Images</h1>
+
+<script type="text/template" id="product-image-field-template">
+	Path: <input class="image-field-path" type="text" name="">
+	Order: <input class="image-field-order" type="text" name="">	
+	Delete: <input class="image-field-delete" type="checkbox" name="">
+	<br>
+</script>
+
+{{ Form::open(array('action' => array('ProductController@postAddImages', $product->id), 'id' => 'product-image-form', 'data-fieldcount' => count($productImages) )); }}
+
+	<div class="fields">
+
+		<?php $count = 0 ?>
+
+		@foreach( $productImages as $image )
+
+			Path: <input type="text" name="image[<?php echo $count; ?>][path]" value="<?php echo $image->path; ?>">
+			Order: <input type="text" name="image[<?php echo $count; ?>][order]" value="<?php echo $image->order; ?>">
+			Delete: <input type="checkbox" name="image[<?php echo $count; ?>][delete]">
+			<br>
+
+			<?php $count += 1; ?>
+
+			<!-- Image: {{ Form::text('images[]', $image->path) }}<br> -->
+
+		@endforeach
+
+	</div>
+
+	<button type="button" id="add-product-image-button">Add Image</button>
+
+	{{ Form::submit('Save Images'); }}
+
+{{ Form::close(); }}
+
+
+<?php var_dump(count($productImages)); ?>
+
+
+@include('partials.foot')

@@ -3,6 +3,7 @@
 /******************************************************************************/
 
 class Product extends Eloquent {
+
 	protected $fillable = array('name', 'sku', 'description', 'price', 'inventory');
 	protected $attributes = array(
 		'name' => '',
@@ -11,6 +12,7 @@ class Product extends Eloquent {
 		'price' =>0.00,
 		'inventory' => 0
 	);
+
 	protected $categoryArray = NULL;
 	protected $tagArray = NULL;
 
@@ -22,6 +24,11 @@ class Product extends Eloquent {
 	public function tags()
 	{
 		return $this->belongsToMany('Tag');
+	}
+
+	public function productImages()
+	{
+		return $this->hasMany('ProductImage')->orderBy('order');
 	}
 
 	public function hasCategory($categoryId)
