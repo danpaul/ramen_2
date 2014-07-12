@@ -6,6 +6,11 @@ class Category extends Eloquent {
 
 	protected static $categoryChildren;
 
+public function products()
+{
+	return $this->hasMany('Product');
+}
+
 	/**
 	* returns an array of cached variables
 	*
@@ -168,6 +173,17 @@ class Category extends Eloquent {
 	{
 		$children = self::getChildren();
 		return $children[$id];
+	}
+
+	/**
+	*  @param - category id
+	*  @return - an array of category's children's ids plus $id
+	*/
+	public static function getCategoryAndChildren($id)
+	{
+		$all = self::getCategorysChildren($id);
+		array_push($all, (int)$id);
+		return $all;
 	}
 
 	/**

@@ -2,6 +2,8 @@
 
 class CatalogController extends BaseController {
 
+	const PAGINATE_AMOUNT = 20;
+
 	public static function getHome()
 	{
 
@@ -9,7 +11,7 @@ class CatalogController extends BaseController {
 
 		//20 most recent products
 
-		$products = Product::with('productImages')->orderBy('created_at', 'DESC')->paginate(20);
+		$products = Product::with('productImages')->orderBy('created_at', 'DESC')->paginate(self::PAGINATE_AMOUNT);
 
 // dd(DB::getQueryLog());
 // dd($products);
@@ -24,6 +26,20 @@ class CatalogController extends BaseController {
 				// 'productImages' => $product->productImages
 			)
 		);
+
+	}
+
+	public static function getCategory($id)
+	{
+		$products = DB::table('category_product')	
+			->join('products', 'category_product.id', '=', 'products.id')
+			->whereIn('category_product.category_id', Category::getCategoryAndChildren($id))
+			->paginate(self::PAGINATE_AMOUNT);
+
+foreach ($products as $product)
+{
+	var_dump($product->name);
+}
 
 	}
 

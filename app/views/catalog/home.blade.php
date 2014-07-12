@@ -6,8 +6,12 @@
 			<?php Ramen::recurseTree(
 					$categoryTrees[$categoryType],
 					function($category) { ?>
+<!-- ProductController@postUpdate -->
+				<a href="{{{ action('CatalogController@getCategory', $category['id']) }}}">
 
-				{{{ $category['name'] }}}
+					{{{ $category['name'] }}}
+
+				</a>
 
 <?php // var_dump($category['name']); ?>
 				

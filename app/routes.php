@@ -26,6 +26,8 @@ Route::controller('password', 'RemindersController');
 
 Route::controller('product', 'ProductController');
 
+Route::controller('catalog', 'CatalogController');
+
 Route::controller('admin/taxonomy', 'TaxonomyController');
 
 Route::controller('admin/product', 'ProductController');
