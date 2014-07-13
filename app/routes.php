@@ -28,6 +28,8 @@ Route::controller('product', 'ProductController');
 
 Route::controller('catalog', 'CatalogController');
 
+Route::controller('cart', 'CartController');
+
 Route::controller('admin/taxonomy', 'TaxonomyController');
 
 Route::controller('admin/product', 'ProductController');

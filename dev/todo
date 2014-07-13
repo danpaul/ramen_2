@@ -1,6 +1,12 @@
 index:
 	-product created
 
+- include head and foot in all main views
+
+- http://screencast.com/t/8fFhjVwwH -- search for error make sure including head (which auto reports erros)
+
+- limit was is returned in categoryTree: http://screencast.com/t/AZOWRIdq5m
+
 
 - restrict routes in product controller
 

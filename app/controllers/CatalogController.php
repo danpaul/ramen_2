@@ -7,23 +7,14 @@ class CatalogController extends BaseController {
 	public static function getHome()
 	{
 
-		//categories
-
-		//20 most recent products
-
 		$products = Product::with('productImages')->orderBy('created_at', 'DESC')->paginate(self::PAGINATE_AMOUNT);
-
-// dd(DB::getQueryLog());
-// dd($products);
 
 		return View::make(
 			'catalog.home',
 			array(
 				'products' => $products,
-				// 'tags' => Tag::getAll(),
 				'categoryTrees' => Category::getTrees(),
 				'categoryLists' => Category::getLists(),
-				// 'productImages' => $product->productImages
 			)
 		);
 
@@ -36,11 +27,26 @@ class CatalogController extends BaseController {
 			->whereIn('category_product.category_id', Category::getCategoryAndChildren($id))
 			->paginate(self::PAGINATE_AMOUNT);
 
-foreach ($products as $product)
-{
-	var_dump($product->name);
-}
+		return View::make(
+			'catalog.collection',
+			array('products' => $products)
+		)
+			->nest('menu', 'partials.main_menu', array(
+				'categoryTrees' => Category::getTrees(),
+				'categoryLists' => Category::getLists()
+			)
+		);
+	}
 
+	public static function getProduct($id)
+	{
+		return View::make(
+			'catalog.product', array('product' => Product::find($id))
+		)
+			->nest('menu', 'partials.main_menu', array(
+				'categoryTrees' => Category::getTrees(),
+				'categoryLists' => Category::getLists()
+			));
 	}
 
 }
