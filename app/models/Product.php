@@ -57,5 +57,40 @@ class Product extends Eloquent {
 		return in_array((int)$tagId, $this->tagArray);
 	}
 
+	/**
+	*  Iterate through cart and update prices if they are inaccurate.
+	*  If $isCheck === TRUE, value will return FALSE if prices in cart
+	*    do not match price in DB.
+	*/
+	public static function updateCart($isCheck = FALSE)
+	{
+		$productIds = array();
+		$productPrices = array();
+		$isSame = TRUE;
+
+		foreach( Cart::content() as $rowId => $cartItem ){
+			array_push($productIds, $cartItem->id);
+		}
+
+		$products = Product::whereIn('id', $productIds)->get();
+
+		foreach( $products as $product )
+		{
+			$productPrices[$product->id] = $product->price;
+		}
+
+		foreach( Cart::content() as $rowId => $cartItem ){
+			$price = $productPrices[$cartItem->id];
+			if( $cartItem->price !== $price )
+			{
+				$isSame = FALSE;
+				Cart::update($rowId, array('price' => $price ));
+			}
+		}
+
+		return $isSame;
+
+	}
+
 
 }

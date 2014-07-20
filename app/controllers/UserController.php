@@ -108,4 +108,35 @@ class UserController extends BaseController {
 		return View::make('notify', array('messages' => $messages));		
 	}
 
+	public function getCheckout()
+	{
+		Product::updateCart();
+		return View::make(
+			'checkout.review', array('cartContents' => Cart::content())
+		)
+			->nest('menu', 'partials.main_menu', array(
+				'categoryTrees' => Category::getTrees(),
+				'categoryLists' => Category::getLists()
+			));
+	}
+
+	public function getConfirmOrder()
+	{
+		if( !Product::updateCart() )
+		{
+			Redirect::back()->withErrors(
+				'Sorry, a price may have changed. Please confirm your order.'
+			);
+		}
+
+		Product::updateCart();
+		return View::make(
+			'checkout.confirm', array('cartContents' => Cart::content())
+		)
+			->nest('menu', 'partials.main_menu', array(
+				'categoryTrees' => Category::getTrees(),
+				'categoryLists' => Category::getLists()
+			));
+	}
+
 }

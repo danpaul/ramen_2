@@ -14,4 +14,18 @@ class CartController extends BaseController {
 		return Redirect::back();
 	}
 
+	public function postUpdateCart()
+	{
+		foreach( Input::get('items') as $rowId => $cartItem )
+		{
+			if( isset($cartItem['delete']) && $cartItem['delete'] === 'on' )
+			{
+				Cart::remove($rowId);
+			}else{
+				Cart::update($rowId, $cartItem['quantity']);
+			}
+		}
+		return Redirect::back();
+	}
+
 }

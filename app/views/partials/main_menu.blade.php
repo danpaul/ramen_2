@@ -6,7 +6,7 @@
 				$categoryTrees[$categoryType],
 				function($category) { ?>
 
-			<a href="{{{ action('CatalogController@getCategory', $category['id']) }}}">
+			<a href="{{ action('CatalogController@getCategory', $category['id']) }}">
 				{{{ $category['name'] }}}
 			</a>
 	
@@ -15,3 +15,9 @@
 	</ul>
 
 @endforeach
+
+<a href="{{ action('UserController@getCheckout'); }}">
+	Checkout
+</a>
+
+<br>

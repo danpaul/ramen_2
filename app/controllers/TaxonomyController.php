@@ -78,12 +78,20 @@ class TaxonomyController extends BaseController {
 
 	private static function getParent()
 	{
-		if( empty(Input::get('parent'))
+		if( Input::get('parent', NULL) === NULL
 			|| !Category::find(Input::get('parent'))->exists )
 		{
 			return NULL;			
 		}
 		return Input::get('parent');
+
+
+		// if( empty(Input::get('parent'))
+		// 	|| !Category::find(Input::get('parent'))->exists )
+		// {
+		// 	return NULL;			
+		// }
+		// return Input::get('parent');
 	}
 
 
